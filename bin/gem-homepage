@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# gem-homepage
+
+# 20210627
+# 0.0.0
+
+def gem_name
+  ARGV[0]
+end
+
+def rubygems_home
+  ENV['GEM_HOME']
+end
+
+def gem_specification_path
+  [rubygems_home, 'specifications'].join('/')
+end
+
+def gemspec_filename_glob_pattern(gem_name)
+  [gem_name, '*.gemspec'].join
+end
+
+def gem_specification_path_glob_pattern(gem_name)
+  [gem_specification_path, gemspec_filename_glob_pattern(gem_name)].join('/')
+end
+
+def most_recent_gem_specification_file_path(gem_name)
+  Dir.glob(gem_specification_path_glob_pattern(gem_name)).sort.last
+end
+
+def gem_specification(gem_name)
+  instance_eval(File.read(most_recent_gem_specification_file_path(gem_name)))
+end
+
+def gem_homepage(gem_name)
+  gem_specification(gem_name).homepage
+end
+
+def open_homepage(gem_name)
+  system("open #{gem_homepage(gem_name)}")
+end
+
+def main
+  open_homepage(gem_name)
+end
+
+main
