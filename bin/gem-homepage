@@ -1,8 +1,12 @@
 #!/usr/bin/env ruby
 # gem-homepage
 
-# 20210627
-# 0.0.0
+# 20210730
+# 0.0.1
+
+# Changes:
+# 0/1
+# 1. ~ README.md: /git-homepage/gem-homepage/
 
 def gem_name
   ARGV[0]
