@@ -12,9 +12,9 @@ Open a gem's homepage from the command line.
 ```bash
   git clone https://github.com/thoran/git-hompepage
 ```
-### 2. 
+### 2. Copy gem-homepage somewhere in the PATH
 ```bash
-  cp ./git-homepage/bin/gem-homepage to your preferred executable path
+  cp ./gem-homepage/bin/gem-homepage to your preferred executable path
 ```
 ### 3. Ensure that the file is executable
 ```bash
