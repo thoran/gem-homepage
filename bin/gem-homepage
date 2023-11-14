@@ -1,14 +1,12 @@
 #!/usr/bin/env ruby
 # gem-homepage
 
-# 20230510
-# 0.0.2
+# 20231114
+# 0.1.0
 
-# Changes:
-# 0/1
-# 1. ~ README.md: /git-homepage/gem-homepage/
-# 1/2
-# 2. ~ README.md: Include Homebrew installation instructions.
+# Changes since 0.0:
+# -/0
+# 1. Added checks for the existence of the gem, rather than crashing.
 
 def gem_name
   ARGV[0]
@@ -30,20 +28,27 @@ def gem_specification_path_glob_pattern(gem_name)
   [gem_specification_path, gemspec_filename_glob_pattern(gem_name)].join('/')
 end
 
+# There's no need to index this memoized method because this program is single use.
 def most_recent_gem_specification_file_path(gem_name)
-  Dir.glob(gem_specification_path_glob_pattern(gem_name)).sort.last
+  @most_recent_gem_specification_file_path ||= Dir.glob(gem_specification_path_glob_pattern(gem_name)).sort.last
 end
 
 def gem_specification(gem_name)
-  instance_eval(File.read(most_recent_gem_specification_file_path(gem_name)))
+  if most_recent_gem_specification_file_path(gem_name)
+    instance_eval(File.read(most_recent_gem_specification_file_path(gem_name)))
+  end
 end
 
 def gem_homepage(gem_name)
-  gem_specification(gem_name).homepage
+  gem_specification(gem_name)&.homepage
 end
 
 def open_homepage(gem_name)
-  system("open #{gem_homepage(gem_name)}")
+  if gem_homepage(gem_name)
+    system("open #{gem_homepage(gem_name)}")
+  else
+    puts "No gem by the name of #{gem_name} was found."
+  end
 end
 
 def main
