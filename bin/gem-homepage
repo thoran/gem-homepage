@@ -1,12 +1,15 @@
 #!/usr/bin/env ruby
 # gem-homepage
 
-# 20231114
-# 0.1.0
+# 20240317
+# 0.2.0
 
-# Changes since 0.0:
-# -/0
-# 1. Added checks for the existence of the gem, rather than crashing.
+# Changes since 0.1:
+# -/0: There's quite a few 'mezzanine' or 'child' gems which use the name of the 'main' gem at the start of its name which sort last and are being found instead.
+# 1. ~ most_recent_gem_specification_file_path: Add an additional filter to check that the version numbers happen immediately after the name of the gem.
+
+# Note:
+# 1. I could either glob nothing and just grab everything in the gem_specification_path or let the faster filesystem code do some of the work and me do less work changing this!
 
 def gem_name
   ARGV[0]
@@ -30,7 +33,10 @@ end
 
 # There's no need to index this memoized method because this program is single use.
 def most_recent_gem_specification_file_path(gem_name)
-  @most_recent_gem_specification_file_path ||= Dir.glob(gem_specification_path_glob_pattern(gem_name)).sort.last
+  @most_recent_gem_specification_file_path ||= (
+    globbed_matches = Dir.glob(gem_specification_path_glob_pattern(gem_name)) # 1...
+    globbed_matches.select{|globbed_match| globbed_match.match(/#{gem_name}-[\d\.]*\d+\.gemspec/)}.sort.last
+  )
 end
 
 def gem_specification(gem_name)
